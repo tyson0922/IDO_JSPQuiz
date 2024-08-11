@@ -7,4 +7,10 @@
         WHERE LEVEL = #{level} AND
               QUIZ_NUMBER = #{number}
     </select>
+
+    <update id="updateQuizGrading" parameterType="GradingDTO">
+        UPDATE QUIZ SET GRADING=#{grading}
+        WHERE LEVEL=#{level} AND
+              QUIZ_NUMBER=#{number}
+    </update>
 </mapper>

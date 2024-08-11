@@ -1,6 +1,7 @@
 package kopo.poly.service.impl;
 
 import kopo.poly.dto.object.QuizDTO;
+import kopo.poly.dto.quiz.GradingDTO;
 import kopo.poly.dto.request.AnswerDTO;
 import kopo.poly.persistence.mapper.IQuizMapper;
 import kopo.poly.service.IQuizService;
@@ -55,5 +56,17 @@ public class QuizService implements IQuizService {
         } finally {
             return result;
         }
+    }
+
+    public int updateQuizGrading(GradingDTO pDTO){
+        int res=0;
+        try {
+            quizMapper.updateQuizGrading(pDTO);
+            res = 1;
+        }catch (Exception e){
+            e.printStackTrace();
+            res=0;
+        }
+        return res;
     }
 }
