@@ -25,14 +25,14 @@ public class PoseController {
 //        return "pose-wrong";
 //    }
 
-    @GetMapping("/face/correct")
+    @GetMapping("/pose/correct")
     public String poseCorrect(@RequestParam("poseResult") String poseResult, @RequestParam("quizResult") String quizResult, ModelMap model) {
         model.addAttribute("poseResult", poseResult);
         model.addAttribute("quizResult", quizResult);
-        return "pose-correct";
+        return "pose/correct";
     }
 
-    @GetMapping("/face/wrong")
+    @GetMapping("/pose/wrong")
     public String poseWrong(@RequestParam("poseResult") String poseResult, @RequestParam("quizResult") String quizResult, ModelMap model) {
         model.addAttribute("poseResult", poseResult);
         model.addAttribute("quizResult", quizResult);
