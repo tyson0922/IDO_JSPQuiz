@@ -93,6 +93,11 @@
             <artifactId>spring-aspects</artifactId>
             <version>6.1.8</version>
         </dependency>
+        <!-- 메일 발송을 위한 외부라이브러리-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
 <!--        &lt;!&ndash; https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api &ndash;&gt;-->
 <!--        <dependency>-->
 <!--            <groupId>jakarta.servlet.jsp.jstl</groupId>-->

@@ -158,29 +158,50 @@ async function onPlay() {
     }, 100)
 
 }
+// function sendAnswer(answer) {
+//     const urlParams = new URLSearchParams(window.location.search);
+//     const level = urlParams.get('level');
+//     const number = urlParams.get('number');
+//
+//     fetch("/face/grading", {
+//         method : "POST",
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body:JSON.stringify({answer: answer, level: level, number: number})
+//     })
+//         .then(response => response.json())
+//         .then(data => {
+//             if (data.correct) {
+//                 alert('정답입니다.');
+//                 window.location.href = '/face/correct';
+//             } else {
+//                 alert('오답입니다.');
+//                 window.location.href = '/face/wrong';
+//             }
+//         })
+//         .catch((error) => {
+//             console.log('Error : ', error);
+//         });
+// }
 function sendAnswer(answer) {
     const urlParams = new URLSearchParams(window.location.search);
     const level = urlParams.get('level');
     const number = urlParams.get('number');
 
     fetch("/face/grading", {
-        method : "POST",
+        method: "POST",
         headers: {
             'Content-Type': 'application/json'
         },
-        body:JSON.stringify({answer: answer, level: level, number: number})
+        body: JSON.stringify({ answer: answer, level: level, number: number })
     })
         .then(response => response.json())
         .then(data => {
-            if (data.correct) {
-                alert('정답입니다.');
-                window.location.href = '/face/correct';
-            } else {
-                alert('오답입니다.');
-                window.location.href = '/face/wrong';
-            }
+            const resultUrl = data.correct ? '/face/correct' : '/face/wrong';
+            window.location.href = resultUrl;
         })
-        .catch((error) => {
-            console.log('Error : ', error);
+        .catch(error => {
+            console.log('Error: ', error);
         });
 }
