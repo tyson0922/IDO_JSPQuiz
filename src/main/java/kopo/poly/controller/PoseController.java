@@ -39,7 +39,7 @@ public class PoseController {
         return "pose-wrong";
     }
 
-    @GetMapping("pose-estimation")
+    @GetMapping("/pose-estimation")
     public String poseEstimation(@RequestParam("level") Long level, @RequestParam("number") Long number, ModelMap model) {
         QuizDTO pDTO = new QuizDTO();
         pDTO.setLevel(level);

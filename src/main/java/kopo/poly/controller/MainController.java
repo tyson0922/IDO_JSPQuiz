@@ -25,7 +25,7 @@ public class MainController {
     @GetMapping("/user/index")
     public String mainPage() throws Exception {
         log.info(this.getClass().getName() + ".main 페이지 보여주는 함수 실행");
-        return "/index";
+        return "/user/index";
     }
 
     @GetMapping("/redirect")
