@@ -51,11 +51,11 @@ public class FaceController {
 
     @GetMapping(value = "/correct")
     public String correct(){
-        return "face/correct";
+        return "result/correct";
     }
 
     @GetMapping(value = "/wrong")
     public String wrong(){
-        return "face/wrong";
+        return "result/wrong";
     }
 }

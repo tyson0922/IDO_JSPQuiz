@@ -202,8 +202,8 @@
             top: 10%;
         }
     </style>
-    <script src="${pageContext.request.contextPath}/js/face-api.min.js" defer></script>
-    <script src="${pageContext.request.contextPath}/js/face-api-example.js" defer></script>
+    <script src="${pageContext.request.contextPath}/static/js/face-api.min.js" defer></script>
+    <script src="${pageContext.request.contextPath}/static/js/face-api-example.js" defer></script>
 </head>
 <body>
 <div class="question-container">

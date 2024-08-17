@@ -15,39 +15,39 @@ import java.util.Optional;
 public class PoseController {
     private final IQuizService quizService;
 
-//    @GetMapping("face/correct")
-//    public String poseCorrect(){
-//        return  "pose-correct";
+    @GetMapping("pose/correct")
+    public String poseCorrect(){
+        return  "result/correct";
+    }
+
+    @GetMapping("pose/wrong")
+    public String poseWrong(){
+        return "result/wrong";
+    }
+
+//    @GetMapping("/pose/correct")
+//    public String poseCorrect(@RequestParam("poseResult") String poseResult, @RequestParam("quizResult") String quizResult, ModelMap model) {
+//        model.addAttribute("poseResult", poseResult);
+//        model.addAttribute("quizResult", quizResult);
+//        return "pose/correct";
 //    }
 //
-//    @GetMapping("face/wrong")
-//    public String poseWrong(){
+//    @GetMapping("/pose/wrong")
+//    public String poseWrong(@RequestParam("poseResult") String poseResult, @RequestParam("quizResult") String quizResult, ModelMap model) {
+//        model.addAttribute("poseResult", poseResult);
+//        model.addAttribute("quizResult", quizResult);
 //        return "pose-wrong";
 //    }
 
-    @GetMapping("/pose/correct")
-    public String poseCorrect(@RequestParam("poseResult") String poseResult, @RequestParam("quizResult") String quizResult, ModelMap model) {
-        model.addAttribute("poseResult", poseResult);
-        model.addAttribute("quizResult", quizResult);
-        return "pose/correct";
-    }
-
-    @GetMapping("/pose/wrong")
-    public String poseWrong(@RequestParam("poseResult") String poseResult, @RequestParam("quizResult") String quizResult, ModelMap model) {
-        model.addAttribute("poseResult", poseResult);
-        model.addAttribute("quizResult", quizResult);
-        return "pose-wrong";
-    }
-
     @GetMapping("/pose-estimation")
-    public String poseEstimation(@RequestParam("level") Long level, @RequestParam("number") Long number, ModelMap model) {
+    public String poseEstimation(@RequestParam(value = "level", defaultValue = "3") Long level, @RequestParam(value = "number", defaultValue = "1") Long number, ModelMap model) {
         QuizDTO pDTO = new QuizDTO();
         pDTO.setLevel(level);
         pDTO.setQuizNumber(number);
 
         QuizDTO rDTO = Optional.ofNullable(quizService.getQuiz(level, number)).orElseGet(QuizDTO::new);
         model.addAttribute("quiz", rDTO);
-        return "pose-estimation";
+        return "quiz/pose-estimation";
     }
 
     @PostMapping("pose-grading")

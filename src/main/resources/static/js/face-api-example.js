@@ -198,7 +198,11 @@ function sendAnswer(answer) {
     })
         .then(response => response.json())
         .then(data => {
-            const resultUrl = data.correct ? '/face/correct' : '/face/wrong';
+            /**
+             * 정답일 때 correct 부분에 number를 쿼리파라미터로 넣기
+             * @type {string}
+             */
+            const resultUrl = data.correct ? '/result/correct' : '/result/wrong';
             window.location.href = resultUrl;
         })
         .catch(error => {
