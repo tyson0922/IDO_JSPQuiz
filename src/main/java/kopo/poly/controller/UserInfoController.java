@@ -274,6 +274,7 @@ public class UserInfoController {
                 session.setAttribute("SS_USER_ID", userId);
                 session.setAttribute("SS_USER_NAME", CmmUtil.nvl(rDTO.getUserName()));
 
+
             } else {
                 msg = "아이디와 비밀번호가 올바르지 않습니다.";
 
@@ -300,13 +301,13 @@ public class UserInfoController {
     /**
      * 로그인 성공 페이지 이동
      */
-    @GetMapping(value = "loginResult")
+    @GetMapping(value = "loginIndex")
     public String loginSuccess() {
         log.info("{}.user/loginResult Start!", this.getClass().getName());
 
         log.info("{}.user/loginResult End!", this.getClass().getName());
 
-        return "user/loginResult";
+        return "user/loginIndex";
     }
 
     /**
@@ -511,7 +512,7 @@ public class UserInfoController {
 
         log.info("{}.user/newPasswordProc End!", this.getClass().getName());
 
-        return "user/newPasswordResult";
+        return "user/index";
 
     }
 }

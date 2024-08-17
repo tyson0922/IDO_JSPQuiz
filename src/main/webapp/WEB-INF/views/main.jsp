@@ -33,8 +33,10 @@
     <title>Title</title>
     <script type="text/javascript">
         function quizInfo(level, number) {
+
             location.href = "/face/exam?level=" + level + "&number=" + number;
         }
+
     </script>
 </head>
 <body>
