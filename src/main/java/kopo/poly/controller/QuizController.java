@@ -15,22 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class QuizController {
     private final IQuizService quizService;
 
-//    @GetMapping(value = "/exam")
-//    public String face(@RequestParam("level") Long level, @RequestParam("number") Long number, ModelMap model){
-//
-//        QuizDTO pDTO = new QuizDTO();
-//        pDTO.setLevel(level);
-//        pDTO.setQuizNumber(number);
-//
-//        QuizDTO rDTO = Optional.ofNullable(quizService.getQuiz(level, number)).orElseGet(QuizDTO::new);
-//        model.addAttribute("quiz", rDTO);
-//
-//        // Add the quiz list to the model for JSTL rendering
-//        List<QuizDTO> quizList = quizService.getQuizList(); // Assuming getQuizList() returns the list of quizzes
-//        model.addAttribute("quizList", quizList);
-//
-//        return "face/exam";
-//    }
 
     @PostMapping(value = "/grading")
     @ResponseBody
@@ -82,14 +66,13 @@ public class QuizController {
         return "quiz/oxQuiz";
     }
 
+    @GetMapping(value = "/jumpQuiz")
+    public String jumpQuiz(){
+        return "quiz/jumpQuiz";
+    }
 
     @GetMapping(value = "/voiceQuiz")
     public String voiceQuiz(){
-        return "quiz/voiceQuiz"; }
-
+        return "quiz/voiceQuiz";
+    }
 }
-
-
-
-
-

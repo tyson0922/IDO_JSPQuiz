@@ -108,7 +108,7 @@
 
             if (prediction[i].className === "ㄱ") {
                 k1 += prediction[i].probability;
-            } else if (prediction[i].className === "ㅇ") {
+            } else if (prediction[i].className === "ㄷ") {
                 k3 += prediction[i].probability;
             }
         }
