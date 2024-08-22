@@ -25,6 +25,16 @@ public class PoseController {
         return "result/wrong";
     }
 
+//    @GetMapping("/result/correct")
+//    public String resultCorrect(){
+//        return  "result/correct";
+//    }
+//
+//    @GetMapping("/result/wrong")
+//    public String resultWrong(){
+//        return "result/wrong";
+//    }
+
 //    @GetMapping("/pose/correct")
 //    public String poseCorrect(@RequestParam("poseResult") String poseResult, @RequestParam("quizResult") String quizResult, ModelMap model) {
 //        model.addAttribute("poseResult", poseResult);
@@ -50,6 +60,16 @@ public class PoseController {
         return "quiz/pose-estimation";
     }
 
+    @GetMapping("/IDOQuizBD")
+    public String IDOQuizBD(@RequestParam(value = "level", defaultValue = "3") Long level, @RequestParam(value = "number", defaultValue = "1") Long number, ModelMap model) {
+        QuizDTO pDTO = new QuizDTO();
+        pDTO.setLevel(level);
+        pDTO.setQuizNumber(number);
+
+        QuizDTO rDTO = Optional.ofNullable(quizService.getQuiz(level, number)).orElseGet(QuizDTO::new);
+        model.addAttribute("quiz", rDTO);
+        return "quiz/IDOQuizBD";
+    }
     @PostMapping("pose-grading")
     @ResponseBody
     public String poseGrading(@RequestBody GradingDTO request) {

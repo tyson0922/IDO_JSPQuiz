@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: data8320-06
-  Date: 2024-08-07
-  Time: 오후 7:24
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="kopo.poly.dto.object.QuizDTO" %>
 <%
@@ -17,26 +10,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>자세 추정 예제</title>
     <script type="text/javascript" src="/static/js/jquery-3.6.0.min.js"></script>
 
 </head>
 <body>
 <div>Teachable Machine Pose Model</div>
+
+<div><canvas id="canvas"></canvas></div>
 <div id="label-container"></div>
 <div id="content-display">**문제 : <%=rDTO.getContent()%>**</div>
 <div id="label-sum-display">
-    <p>ㄱ의 합계 : <span id="k1">0</span></p>
-    <p>ㄷ의 합계 : <span id="k3">0</span></p>
+    <p>neutral의 합계 : <span id="k1">0</span></p>
+    <p>ㄷ의 합계 : <span id="k2">0</span></p>
 </div>
-
-
-<div>Teachable Machine Pose Model</div>
+<%--<div>Teachable Machine Pose Model</div>--%>
 <button type="button" onclick="init()">Start</button>
-<%--<div>--%>
-    <canvas id="canvas"></canvas>
-<%--</div>--%>
-<%--<div id="label-container"></div>--%>
+
+
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js"></script>
 <script type="text/javascript">
@@ -67,36 +58,24 @@
 
         // append/get elements to the DOM
         const canvas = document.getElementById("canvas");
-        canvas.width = size;
-        canvas.height = size;
+        canvas.width = size; canvas.height = size;
         ctx = canvas.getContext("2d");
         labelContainer = document.getElementById("label-container");
         for (let i = 0; i < maxPredictions; i++) { // and class labels
             labelContainer.appendChild(document.createElement("div"));
         }
-        startTime = new Date().getTime();
     }
-
 
     async function loop(timestamp) {
         webcam.update(); // update the webcam frame
         await predict();
         window.requestAnimationFrame(loop);
-
-        const currentTime = new Date().getTime();
-        if (currentTime - startTime >= 3000) {
-            const predictedAnswer = k3 > k1 ? "ㄷ" : "ㄱ";
-            compareAnswers(predictedAnswer);
-            startTime = currentTime;
-            k1 = 0;
-            k3 = 0;
-        }
     }
 
     async function predict() {
         // Prediction #1: run input through posenet
         // estimatePose can take in an image, video or canvas html element
-        const {pose, posenetOutput} = await model.estimatePose(webcam.canvas);
+        const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
         // Prediction 2: run input through teachable machine classification model
         const prediction = await model.predict(posenetOutput);
 
@@ -104,16 +83,8 @@
             const classPrediction =
                 prediction[i].className + ": " + prediction[i].probability.toFixed(2);
             labelContainer.childNodes[i].innerHTML = classPrediction;
-
-
-            if (prediction[i].className === "ㄱ") {
-                k1 += prediction[i].probability;
-            } else if (prediction[i].className === "ㄷ") {
-                k3 += prediction[i].probability;
-            }
         }
-        document.getElementById("k1").innerText = k1.toFixed(2);
-        document.getElementById("k3").innerText = k3.toFixed(2);
+
         // finally draw the poses
         drawPose(pose);
     }
@@ -131,7 +102,7 @@
     }
 
     let k1 = 0;
-    let k3 = 0;
+    let k2 = 0;
     let predictedAnswer = 0;
     let startTime;
 
@@ -203,7 +174,7 @@
         // const resultUrl = data.correct ? '/face/correct' : '/face/wrong';
         // window.location.href = resultUrl;
         // return;
-    };
+    }
 
     // function compareAnswers(predictedAnswer){
     //   let grading = '';
@@ -239,10 +210,6 @@
     //   });
 
 
-
 </script>
-
-
 </body>
 </html>
-
