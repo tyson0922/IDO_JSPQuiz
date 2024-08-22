@@ -14,3 +14,4 @@
               QUIZ_NUMBER=#{number}
     </update>
 </mapper>
+

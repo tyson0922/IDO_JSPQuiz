@@ -75,4 +75,7 @@ public class QuizController {
     public String voiceQuiz(){
         return "quiz/voiceQuiz";
     }
+
+    @GetMapping(value= "/IDOQuizBD")
+    public String IDOQuizBD(){return "quiz/IDOQuizBD";}
 }
