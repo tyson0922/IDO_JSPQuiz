@@ -25,6 +25,7 @@
         const URL = "static/models/";
         let model, webcam, ctx, labelContainer, maxPredictions;
         let timeoutHandle;  // To store the timeout ID
+        let poseDetected = false; // Flag to determine if pose has been detected
 
         async function init() {
             const modelURL = URL + "model.json";
@@ -52,6 +53,11 @@
 
             // 웹캠 및 모델 초기화가 완료되면 바로 예측 시작
             window.requestAnimationFrame(loop);
+
+            // Check for pose after 5 seconds
+            setTimeout(checkPoseAfterDelay, 5000); // 5 seconds delay
+
+            // redirectToResultCorrectAfterDelay(5000);
         }
 
         async function loop(timestamp) {
@@ -71,6 +77,12 @@
                 const classPrediction =
                     prediction[i].className + ": " + prediction[i].probability.toFixed(2);
                 labelContainer.childNodes[i].innerHTML = classPrediction;
+
+
+                // Check if the pose 'ㄷ' is detected
+                if (prediction[i].className === 'ㄷ' && prediction[i].probability > 0.5) {
+                    poseDetected = true; // Set flag if pose 'ㄷ' is detected
+                }
             }
 
             // finally draw the poses
@@ -104,6 +116,16 @@
         window.onload = function() {
             setTimeout(init, 6000); // 6초 후에 init 함수를 호출합니다.
         };
+
+        // function redirectToResultCorrectAfterDelay(delay) {
+        //     setTimeout(() => {
+        //         window.location.href = '/result/correct';
+        //     }, delay);
+        // }
+
+
+
+
 
 
         let k1 = 0;
@@ -188,6 +210,14 @@
             // const resultUrl = data.correct ? '/result/correct' : '/result/wrong';
             // window.location.href = resultUrl;
             // return;
+        }
+
+        function checkPoseAfterDelay() {
+            if (poseDetected) {
+                window.location.href = '/result/correct';
+            } else {
+                window.location.href = '/result/wrong';
+            }
         }
 
     </script>
