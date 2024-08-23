@@ -128,7 +128,7 @@
         }
     </style>
     <script src="${pageContext.request.contextPath}/static/js/face-api.min.js" defer></script>
-    <script src="${pageContext.request.contextPath}/static/js/face-api-example.js" defer></script>
+    <script src="${pageContext.request.contextPath}/static/js/face-api-example2.js" defer></script>
 </head>
 <body>
 <div class="container">
@@ -164,7 +164,7 @@
     startVideo();
 
     async function loadModels() {
-        await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+        await faceapi.nets.tinyFaceDetector.loadFromUri('/static/models');
     }
 
     loadModels();
@@ -239,6 +239,9 @@
         // 주기적으로 얼굴 위치 확인
         setTimeout(checkUserPosition, 1000);
     }
+
+
+
 </script>
 </body>
 </html>
