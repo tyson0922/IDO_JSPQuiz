@@ -196,7 +196,7 @@
                          * correct 뒤에 number 쿼리파라미터 붙여서 보내기
                          * @type {string}
                          */
-                        window.location.href = '/result/correct';
+                        window.location.href = '/result/correct75';
                     } else {
                         window.location.href = '/result/wrong';
                     }
@@ -214,7 +214,7 @@
 
         function checkPoseAfterDelay() {
             if (poseDetected) {
-                window.location.href = '/result/correct';
+                window.location.href = '/result/correct75';
             } else {
                 window.location.href = '/result/wrong';
             }
@@ -420,11 +420,15 @@
     <img id="questionReplacement" class="question-replacement" src="static/img/IDOQuizBDq.PNG">
     <!-- Replacement Image -->
 </div>
-<div id="label-container"></div>
-<div id="content-display">**문제 : <%=rDTO.getContent()%>**</div>
-<div id="label-sum-display">
+
+<div id="label-container" style="display: none"></div>
+
+<div id="content-display" style="display: none">**문제 : <%=rDTO.getContent()%></div>
+
+<div id="label-sum-display" style="display: none">
     <p>neutral의 합계 : <span id="k1">0</span></p>
     <p>ㄷ의 합계 : <span id="k2">0</span></p>
 </div>
+
 </body>
 </html>

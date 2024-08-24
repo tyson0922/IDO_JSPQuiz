@@ -127,7 +127,10 @@
             opacity: 1;
         }
     </style>
+<%--    <script src="${pageContext.request.contextPath}/static/js/face-api.min.js" defer></script>--%>
     <script src="${pageContext.request.contextPath}/static/js/face-api.min.js" defer></script>
+
+
     <script src="${pageContext.request.contextPath}/static/js/face-api-example2.js" defer></script>
 </head>
 <body>
@@ -143,11 +146,79 @@
     <div class="video-container">
         <video id="video" autoplay muted playsinline></video>
         <div id="countdown" class="countdown">5</div>
+        <canvas id="overlay" style="position: absolute; top: 0; left: 0;"></canvas>
     </div>
     <div id="selectedWordContainer" class="selected-word-container"></div>
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const video = document.getElementById('video');
+        const overlay = document.getElementById('overlay');
+
+        if (typeof faceapi === 'undefined') {
+            console.error('faceapi is not defined. Ensure that face-api.min.js is loaded.');
+            return;
+        }
+
+        async function loadModels() {
+            try {
+                await faceapi.nets.tinyFaceDetector.loadFromUri('/static/models');
+                console.log('Models loaded successfully');
+                startVideo();
+            } catch (error) {
+                console.error('Error loading models:', error);
+            }
+        }
+
+        function startVideo() {
+            navigator.mediaDevices.getUserMedia({ video: {} })
+                .then(stream => {
+                    video.srcObject = stream;
+                    video.onloadeddata = () => {
+                        overlay.width = video.videoWidth;
+                        overlay.height = video.videoHeight;
+                        onPlay();
+                    };
+                })
+                .catch(err => console.error('Error accessing webcam:', err));
+        }
+
+        async function onPlay() {
+            const displaySize = { width: video.videoWidth, height: video.videoHeight };
+
+            if (!overlay) {
+                console.error('Overlay canvas element is null');
+                return;
+            }
+
+            faceapi.matchDimensions(overlay, displaySize);
+
+            const context = overlay.getContext('2d');
+            context.setTransform(-1, 0, 0, 1, overlay.width, 0); // Mirror effect
+
+            setInterval(async () => {
+                if (video.paused || video.ended) return;
+
+                const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+                const resizedDetections = faceapi.resizeResults(detections, displaySize);
+
+                context.clearRect(0, 0, overlay.width, overlay.height);
+                faceapi.draw.drawFaceLandmarks(overlay, resizedDetections);
+
+                context.strokeStyle = 'red';
+                context.beginPath();
+                context.moveTo(overlay.width / 3, 0);
+                context.lineTo(overlay.width / 3, overlay.height);
+                context.stroke();
+
+            }, 100);
+        }
+
+        loadModels();
+    });
+
+    // Countdown and word detection logic
     let currentWordIndex = 0; // 현재 인식해야 할 단어의 인덱스
     let selectedWords = []; // 선택된 단어들을 저장할 배열
 
@@ -160,14 +231,6 @@
             console.error('Error accessing webcam: ', err);
         }
     }
-
-    startVideo();
-
-    async function loadModels() {
-        await faceapi.nets.tinyFaceDetector.loadFromUri('/static/models');
-    }
-
-    loadModels();
 
     setTimeout(() => {
         document.getElementById('mainHeading').textContent = '문장을 완성해보아요!';
@@ -195,7 +258,7 @@
 
         for (let i = 0; i < words.length; i++) {
             const wordBox = words[i].getBoundingClientRect();
-            const wordCenterX = wordBox.left + wordBox.width / 2;
+            const wordCenterX = wordBox.left + wordBox.width / 3;
             wordRegions.push({
                 element: words[i],
                 centerX: wordCenterX,
@@ -212,22 +275,19 @@
 
         if (detections.length > 0) {
             const box = detections[0].box;
-            const faceCenterX = box.x + box.width / 2;
+            const faceCenterX = box.x + box.width / 3;
             const wordRegions = getWordRegions();
 
-            // 현재 인식해야 할 단어의 중앙 좌표 가져오기
             const targetRegion = wordRegions[currentWordIndex];
             const wordRegionCenterX = targetRegion.centerX;
 
-            // 얼굴이 단어의 중앙 근처에 위치하는지 확인 (여기서 100은 허용 오차)
             if (Math.abs(faceCenterX - wordRegionCenterX) < 100) {
-                if (!selectedWords.includes(targetRegion.wordText)) { // 중복 방지
-                    selectedWords.push(targetRegion.wordText); // 단어 추가
+                if (!selectedWords.includes(targetRegion.wordText)) {
+                    selectedWords.push(targetRegion.wordText);
                     document.getElementById('selectedWordContainer').textContent = `선택된 단어: ${selectedWords.join(', ')}`;
                 }
                 currentWordIndex++;
 
-                // 마지막 단어까지 인식했으면 인식 순서 초기화
                 if (currentWordIndex >= wordRegions.length) {
                     currentWordIndex = 0;
                 }
@@ -236,12 +296,8 @@
             document.getElementById('selectedWordContainer').textContent = '얼굴을 인식하지 못했습니다.';
         }
 
-        // 주기적으로 얼굴 위치 확인
         setTimeout(checkUserPosition, 1000);
     }
-
-
-
 </script>
 </body>
 </html>

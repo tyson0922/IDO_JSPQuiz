@@ -149,7 +149,7 @@
 
       const commands = {
         '나무': function() {
-          window.location.href = '/result/correct';
+          window.location.href = '/result/correct50';
         },
         '*catchall': function() {
           window.location.href = '/result/wrong';

@@ -202,7 +202,7 @@ function sendAnswer(answer) {
              * 정답일 때 correct 부분에 number를 쿼리파라미터로 넣기
              * @type {string}
              */
-            const resultUrl = data.correct ? '/result/correct' : '/result/wrong';
+            const resultUrl = data.correct ? '/result/correct25' : '/result/wrong';
             window.location.href = resultUrl;
         })
         .catch(error => {
