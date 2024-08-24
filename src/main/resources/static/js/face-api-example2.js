@@ -2,7 +2,7 @@
 
 const video = document.getElementById('video');
 const overlay = document.getElementById('overlay');
-let lastPostion = '';
+// let lastPosition = '';
 
 Promise.all([
     faceapi.nets.tinyFaceDetector.loadFromUri('/static/models'),
@@ -22,6 +22,30 @@ function startVideo() {
         })
         .catch(err => console.error(err));
 }
+
+async function initialize() {
+    await loadModels();
+    startVideo();
+    setTimeout(() => {
+        document.getElementById('mainHeading').textContent = '문장을 완성해보아요!';
+        setTimeout(() => {
+            document.getElementById('mainHeading').textContent = '단어 앞으로 이동해요!';
+            document.getElementById('wordsContainer').style.opacity = '1';
+            document.getElementById('video').style.opacity = '0.5';
+            let countdown = 5;
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                document.getElementById('countdown').textContent = countdown;
+                if (countdown === 0) {
+                    clearInterval(countdownInterval);
+                    checkUserPosition();
+                }
+            }, 1000);
+        }, 3500);
+    }, 0);
+}
+
+
 async function onPlay() {
     const displaySize = { width: video.videoWidth, height: video.videoHeight };
     faceapi.matchDimensions(overlay, displaySize);
@@ -69,7 +93,7 @@ async function onPlay() {
     function evaluateChoices() {
         const [firstChoice, secondChoice, thirdChoice] = choices;
         if (firstChoice === 'middle' && secondChoice === 'right' && thirdChoice === 'left') {
-            redirectUrl = '/result/correct';
+            redirectUrl = '/result/correct100';
         } else {
             redirectUrl = '/result/wrong';
         }
