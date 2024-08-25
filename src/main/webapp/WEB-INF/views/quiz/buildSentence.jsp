@@ -140,7 +140,7 @@
     </div>
     <div id="wordsContainer" class="words-container">
         <div class="word" id="word1">되었어요</div> <!-- 첫 번째 단어 -->
-        <div class="word" id="word2">형은</div> <!-- 두 번째 단어 -->
+        <div class="word" id="word2">아우는</div> <!-- 두 번째 단어 -->
         <div class="word" id="word3">부자가</div> <!-- 세 번째 단어 -->
     </div>
     <div class="video-container">
