@@ -1,5 +1,6 @@
 package kopo.poly.controller;
 
+import jakarta.servlet.http.HttpSession;
 import kopo.poly.dto.object.QuizDTO;
 import kopo.poly.dto.request.AnswerDTO;
 import kopo.poly.dto.response.CorrectDTO;
@@ -8,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 @Slf4j
 @RequestMapping("/quiz")
 @Controller
@@ -52,7 +55,13 @@ public class QuizController {
 
 
     @GetMapping(value = "/IDOVideo")
-    public String IDOVideo(){
+    public String IDOVideo(HttpSession session, RedirectAttributes redirectAttributes)
+    {Object user = session.getAttribute("user");
+
+        if (user == null) {  // 로그인되지 않은 상태라면
+            redirectAttributes.addFlashAttribute("loginMessage", "로그인이 필요합니다.");
+            return "redirect:/user/login";  // 로그인 페이지로 리다이렉트
+        }
         return "quiz/IDOVideo";
     }
 
