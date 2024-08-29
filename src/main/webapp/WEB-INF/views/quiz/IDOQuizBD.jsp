@@ -416,8 +416,16 @@
             <%--<div>Teachable Machine Pose Model</div>--%>
 <%--            <button type="button" onclick="init()">Start</button>--%>
         </div>
+
+<%--        <div class="webcam-container">--%>
+<%--            <div style="position: relative;">--%>
+<%--                <canvas id="canvas"></canvas>--%>
+<%--                <img id="questionReplacement" class="question-replacement" src="static/img/IDOQuizBDq.PNG">--%>
+<%--            </div>--%>
+<%--        </div>--%>
+
     </div>
-    <img id="questionReplacement" class="question-replacement" src="static/img/IDOQuizBDq.PNG">
+<%--    <img id="questionReplacement" class="question-replacement" src="static/img/IDOQuizBDq.PNG">--%>
     <!-- Replacement Image -->
 </div>
 

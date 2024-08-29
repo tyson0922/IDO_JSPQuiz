@@ -253,6 +253,7 @@
 
 </head>
 <body>
+
 <%--<h2>로그인하기</h2>--%>
 <%--<hr/>--%>
 <%--<br/>--%>
@@ -307,21 +308,7 @@
                 <a href="/selectone" class="nav-item nav-link" id="Class-Button" style="font-family: 'Katuri';font-size: 25px;" >수업</a>
                 <a href="/user/intro" class="nav-item nav-link" id="Contact-Button" style="font-family: 'Katuri';font-size: 25px;">소개</a>
 
-
-                <!--                <div class="nav-item dropdown">-->
-                <!--                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>-->
-                <!--                    <div class="dropdown-menu rounded-0 rounded-bottom border-0 shadow-sm m-0">-->
-                <!--                        <a href="facility.html" class="dropdown-item">School Facilities</a>-->
-                <!--                        <a href="team.html" class="dropdown-item">Popular Teachers</a>-->
-                <!--                        <a href="call-to-action.html" class="dropdown-item">Become A Teachers</a>-->
-                <!--                        <a href="appointment.html" class="dropdown-item">Make Appointment</a>-->
-                <!--                        <a href="testimonial.html" class="dropdown-item">Testimonial</a>-->
-                <!--                        <a href="404.html" class="dropdown-item">404 Error</a>-->
-                <!--                    </div>-->
-                <!--                </div>-->
-                <!--                <a href="contact.html" class="nav-item nav-link">Contact Us</a>-->
             </div>
-            <!--            <a href="" class="btn btn-primary rounded-pill px-3 d-none d-lg-block">Join Us<i class="fa fa-arrow-right ms-3"></i></a>-->
             <a href="/user/login" style="background-color: #0d6efd; color:#FFFFFF; font-family: 'Katuri'; font-size: 25px; border-radius:15px; width: 8%; height: 8%; text-align: center; margin-right: 7%;"  >로그인</a>
         </div>
 
