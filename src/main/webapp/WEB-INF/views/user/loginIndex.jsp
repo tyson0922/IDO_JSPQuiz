@@ -157,14 +157,16 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav mx-auto">
                 <!--                <a href="IDOindex.html" class="nav-item nav-link active">홈</a>-->
-                <a href="/main" class="nav-item nav-link" id="Home-Button" style="font-family: 'Katuri'; font-size: 25px;">홈</a>
+                <a href="/user/loginIndex" class="nav-item nav-link" id="Home-Button" style="font-family: 'Katuri'; font-size: 25px;">홈</a>
                 <a href="/quiz/IDOLessonSelection1" class="nav-item nav-link" id="Class-Button" style="font-family: 'Katuri';font-size: 25px;" >수업</a>
                 <a href="/user/intro" class="nav-item nav-link" id="Contact-Button" style="font-family: 'Katuri';font-size: 25px;">소개</a>
 
 
             </div>
+
             <!--            <a href="" class="btn btn-primary rounded-pill px-3 d-none d-lg-block">Join Us<i class="fa fa-arrow-right ms-3"></i></a>-->
-            <a href="/user/login" style="background-color: #0d6efd; color:#FFFFFF; font-family: 'Katuri'; font-size: 25px; border-radius:15px; width: 8%; height: 8%; text-align: center; margin-right: 7%;" >프로필</a>
+            <a href="/user/logout" style="background-color: #dc3545; color:#FFFFFF; font-family: 'Katuri'; font-size: 25px; border-radius:15px; width: 8%; height: 8%; text-align: center; margin-right: 1%;" >로그아웃</a>
+            <a href="/user/IDOMyProfilePage" style="background-color: #0d6efd; color:#FFFFFF; font-family: 'Katuri'; font-size: 25px; border-radius:15px; width: 8%; height: 8%; text-align: center; margin-right: 7%;" >프로필</a>
         </div>
 
 

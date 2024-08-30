@@ -1,5 +1,6 @@
 package kopo.poly.controller;
 
+import jakarta.servlet.http.HttpSession;
 import kopo.poly.dto.object.SentenceDTO;
 import kopo.poly.dto.request.WordSelectionDTO;
 import kopo.poly.dto.response.SentenceResponseDTO;
@@ -31,7 +32,12 @@ public class SentenceController {
     }
 
     @GetMapping(value = "/buildSentence")
-    public String buildSentencePage() {
+    public String buildSentencePage(HttpSession session) {
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
+
         return "quiz/buildSentence"; // JSP 파일 경로
     }
 }

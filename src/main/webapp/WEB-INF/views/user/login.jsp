@@ -106,6 +106,35 @@
     <!-- Template Stylesheet -->
     <link href="/static/css/style.css" rel="stylesheet">
 
+    <script>
+        document.getElementById('btnLogin').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const userId = document.getElementById('userId').value;
+            const password = document.getElementById('userPassword').value;
+
+            // Send the login request via AJAX
+            fetch('/user/loginProc', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    password: password
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 1) { // Assuming 1 means login success
+                        window.location.href = '/user/loginIndex'; // Redirect to the main page after login
+                    } else {
+                        alert(data.msg); // Show error message if login fails
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
     <style>
 
         @font-face {
@@ -325,19 +354,23 @@
         <div class="imgTest">
             <img class="img-fluid background" src="/static/img/IDOmainBackground.png" style="z-index: 1;"alt="">
             <div id="input-box" style="z-index: 5;">
-                <form id="f">
-                    <div class="login-input"><input name="userId" placeholder="아이디" id="userId" type="text" style="width:250px; height: 50px; border-radius:10px; border: none; font-family: 'TmoneyRoundWindExtraBold'; "></div><br>
-                    <div class="login-input"><input name="password" placeholder="비밀번호" id="userPassword" type="password" style="width:250px; height: 50px; border-radius:10px; border: none; font-family: 'TmoneyRoundWindExtraBold'; "></div><br>
+                <form id="f" action="/user/loginProc" method="post">
+                    <div class="login-input">
+                        <input name="userId" placeholder="아이디" id="userId" type="text" style="width:250px; height: 50px; border-radius:10px; border: none; font-family: 'TmoneyRoundWindExtraBold'; ">
+                    </div><br>
+                    <div class="login-input">
+                        <input name="password" placeholder="비밀번호" id="userPassword" type="password" style="width:250px; height: 50px; border-radius:10px; border: none; font-family: 'TmoneyRoundWindExtraBold'; ">
+                    </div><br>
                     <div id="signUp">
-                        <a href="/user/userRegForm" class="gotojoin"><span class="signUp" style="font-family: 'TmoneyRoundWindExtraBold'; margin-left:38%;" id="btnUserReg">회원가입</span></a>
+                        <a href="/user/userRegForm" class="gotojoin">
+                            <span class="signUp" style="font-family: 'TmoneyRoundWindExtraBold'; margin-left:38%;" id="btnUserReg">회원가입</span>
+                        </a>
                     </div>
                     <button id="btnLogin" type="button" style="margin-top: 15px; width: 250px; height: 45px; flex-shrink: 0; border-radius: 50px; border: none; background: #0d6efd; box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25); font-family: 'TmoneyRoundWindExtraBold';">로그인</button>
-
                 </form>
                 <div id="forgot">
                     <span class="forgotId" style="font-family: 'TmoneyRoundWindExtraBold';" id="btnSearchUserId">아이디 찾기</span>
                     <span class="forgotPw" style="font-family: 'TmoneyRoundWindExtraBold';" id="btnSearchPassword">비밀번호 찾기</span>
-
                 </div>
 
             </div>

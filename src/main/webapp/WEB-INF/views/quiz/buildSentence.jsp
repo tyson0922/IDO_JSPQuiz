@@ -132,11 +132,160 @@
 
 
     <script src="${pageContext.request.contextPath}/static/js/face-api-example2.js" defer></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const video = document.getElementById('video');
+            const overlay = document.getElementById('overlay');
+
+            if (typeof faceapi === 'undefined') {
+                console.error('faceapi is not defined. Ensure that face-api.min.js is loaded.');
+                return;
+            }
+
+            async function loadModels() {
+                try {
+                    await faceapi.nets.tinyFaceDetector.loadFromUri('/static/models');
+                    console.log('Models loaded successfully');
+                    startVideo();
+                } catch (error) {
+                    console.error('Error loading models:', error);
+                }
+            }
+            //
+            // function startVideo() {
+            //     navigator.mediaDevices.getUserMedia({ video: {} })
+            //         .then(stream => {
+            //             video.srcObject = stream;
+            //             video.onloadeddata = () => {
+            //                 overlay.width = video.videoWidth;
+            //                 overlay.height = video.videoHeight;
+            //                 onPlay();
+            //             };
+            //         })
+            //         .catch(err => console.error('Error accessing webcam:', err));
+            // }
+            //
+            // async function onPlay() {
+            //     const displaySize = { width: video.videoWidth, height: video.videoHeight };
+            //
+            //     if (!overlay) {
+            //         console.error('Overlay canvas element is null');
+            //         return;
+            //     }
+            //
+            //     faceapi.matchDimensions(overlay, displaySize);
+            //
+            //     const context = overlay.getContext('2d');
+            //     context.setTransform(-1, 0, 0, 1, overlay.width, 0); // Mirror effect
+            //
+            //     setInterval(async () => {
+            //         if (video.paused || video.ended) return;
+            //
+            //         const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+            //         const resizedDetections = faceapi.resizeResults(detections, displaySize);
+            //
+            //         context.clearRect(0, 0, overlay.width, overlay.height);
+            //         faceapi.draw.drawFaceLandmarks(overlay, resizedDetections);
+            //
+            //         context.strokeStyle = 'red';
+            //         context.beginPath();
+            //         context.moveTo(overlay.width / 3, 0);
+            //         context.lineTo(overlay.width / 3, overlay.height);
+            //         context.stroke();
+            //
+            //     }, 100);
+            // }
+
+            loadModels();
+        });
+
+        // Countdown and word detection logic
+        // let currentWordIndex = 0; // 현재 인식해야 할 단어의 인덱스
+        // let selectedWords = []; // 선택된 단어들을 저장할 배열
+        //
+        // async function startVideo() {
+        //     const video = document.getElementById('video');
+        //     try {
+        //         const stream = await navigator.mediaDevices.getUserMedia({ video: {} });
+        //         video.srcObject = stream;
+        //     } catch (err) {
+        //         console.error('Error accessing webcam: ', err);
+        //     }
+        // }
+
+        // setTimeout(() => {
+        //     document.getElementById('mainHeading').textContent = '문장을 완성해보아요!';
+        //
+        //     setTimeout(() => {
+        //         document.getElementById('mainHeading').textContent = '단어 앞으로 이동해요!';
+        //         document.getElementById('wordsContainer').style.opacity = '1';
+        //         document.getElementById('video').style.opacity = '0.5';
+        //
+        //         let countdown = 5;
+        //         const countdownInterval = setInterval(() => {
+        //             countdown--;
+        //             document.getElementById('countdown').textContent = countdown;
+        //             if (countdown === 0) {
+        //                 clearInterval(countdownInterval);
+        //                 checkUserPosition();
+        //             }
+        //         }, 1000);
+        //     }, 3500);
+        // }, 0);
+
+        // function getWordRegions() {
+        //     const words = document.getElementsByClassName('word');
+        //     const wordRegions = [];
+        //
+        //     for (let i = 0; i < words.length; i++) {
+        //         const wordBox = words[i].getBoundingClientRect();
+        //         const wordCenterX = wordBox.left + wordBox.width / 3;
+        //         wordRegions.push({
+        //             element: words[i],
+        //             centerX: wordCenterX,
+        //             wordText: words[i].textContent
+        //         });
+        //     }
+        //
+        //     return wordRegions;
+        // }
+
+        <%--async function checkUserPosition() {--%>
+        <%--    const video = document.getElementById('video');--%>
+        <%--    const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions());--%>
+
+        <%--    if (detections.length > 0) {--%>
+        <%--        const box = detections[0].box;--%>
+        <%--        const faceCenterX = box.x + box.width / 3;--%>
+        <%--        const wordRegions = getWordRegions();--%>
+
+        <%--        const targetRegion = wordRegions[currentWordIndex];--%>
+        <%--        const wordRegionCenterX = targetRegion.centerX;--%>
+
+        <%--        if (Math.abs(faceCenterX - wordRegionCenterX) < 100) {--%>
+        <%--            if (!selectedWords.includes(targetRegion.wordText)) {--%>
+        <%--                selectedWords.push(targetRegion.wordText);--%>
+        <%--                document.getElementById('selectedWordContainer').textContent = `선택된 단어: ${selectedWords.join(', ')}`;--%>
+        <%--            }--%>
+        <%--            currentWordIndex++;--%>
+
+        <%--            if (currentWordIndex >= wordRegions.length) {--%>
+        <%--                currentWordIndex = 0;--%>
+        <%--            }--%>
+        <%--        }--%>
+        <%--    } else {--%>
+        <%--        document.getElementById('selectedWordContainer').textContent = '얼굴을 인식하지 못했습니다.';--%>
+        <%--    }--%>
+
+        <%--    setTimeout(checkUserPosition, 1000);--%>
+        <%--}--%>
+    </script>
 </head>
 <body>
 <div class="container">
     <div class="video-heading">
-        <h2 id="mainHeading">몸으로 말해요!</h2>
+        <h2 id="mainHeading">문장을 완성해보아요!</h2>
     </div>
     <div id="wordsContainer" class="words-container">
         <div class="word" id="word1">되었어요</div> <!-- 첫 번째 단어 -->
@@ -151,153 +300,10 @@
     <div id="selectedWordContainer" class="selected-word-container"></div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', async () => {
-        const video = document.getElementById('video');
-        const overlay = document.getElementById('overlay');
-
-        if (typeof faceapi === 'undefined') {
-            console.error('faceapi is not defined. Ensure that face-api.min.js is loaded.');
-            return;
-        }
-
-        async function loadModels() {
-            try {
-                await faceapi.nets.tinyFaceDetector.loadFromUri('/static/models');
-                console.log('Models loaded successfully');
-                startVideo();
-            } catch (error) {
-                console.error('Error loading models:', error);
-            }
-        }
-
-        function startVideo() {
-            navigator.mediaDevices.getUserMedia({ video: {} })
-                .then(stream => {
-                    video.srcObject = stream;
-                    video.onloadeddata = () => {
-                        overlay.width = video.videoWidth;
-                        overlay.height = video.videoHeight;
-                        onPlay();
-                    };
-                })
-                .catch(err => console.error('Error accessing webcam:', err));
-        }
-
-        async function onPlay() {
-            const displaySize = { width: video.videoWidth, height: video.videoHeight };
-
-            if (!overlay) {
-                console.error('Overlay canvas element is null');
-                return;
-            }
-
-            faceapi.matchDimensions(overlay, displaySize);
-
-            const context = overlay.getContext('2d');
-            context.setTransform(-1, 0, 0, 1, overlay.width, 0); // Mirror effect
-
-            setInterval(async () => {
-                if (video.paused || video.ended) return;
-
-                const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
-                const resizedDetections = faceapi.resizeResults(detections, displaySize);
-
-                context.clearRect(0, 0, overlay.width, overlay.height);
-                faceapi.draw.drawFaceLandmarks(overlay, resizedDetections);
-
-                context.strokeStyle = 'red';
-                context.beginPath();
-                context.moveTo(overlay.width / 3, 0);
-                context.lineTo(overlay.width / 3, overlay.height);
-                context.stroke();
-
-            }, 100);
-        }
-
-        loadModels();
-    });
-
-    // Countdown and word detection logic
-    let currentWordIndex = 0; // 현재 인식해야 할 단어의 인덱스
-    let selectedWords = []; // 선택된 단어들을 저장할 배열
-
-    async function startVideo() {
-        const video = document.getElementById('video');
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: {} });
-            video.srcObject = stream;
-        } catch (err) {
-            console.error('Error accessing webcam: ', err);
-        }
-    }
-
-    setTimeout(() => {
-        document.getElementById('mainHeading').textContent = '문장을 완성해보아요!';
-
-        setTimeout(() => {
-            document.getElementById('mainHeading').textContent = '단어 앞으로 이동해요!';
-            document.getElementById('wordsContainer').style.opacity = '1';
-            document.getElementById('video').style.opacity = '0.5';
-
-            let countdown = 5;
-            const countdownInterval = setInterval(() => {
-                countdown--;
-                document.getElementById('countdown').textContent = countdown;
-                if (countdown === 0) {
-                    clearInterval(countdownInterval);
-                    checkUserPosition();
-                }
-            }, 1000);
-        }, 3500);
-    }, 0);
-
-    function getWordRegions() {
-        const words = document.getElementsByClassName('word');
-        const wordRegions = [];
-
-        for (let i = 0; i < words.length; i++) {
-            const wordBox = words[i].getBoundingClientRect();
-            const wordCenterX = wordBox.left + wordBox.width / 3;
-            wordRegions.push({
-                element: words[i],
-                centerX: wordCenterX,
-                wordText: words[i].textContent
-            });
-        }
-
-        return wordRegions;
-    }
-
-    async function checkUserPosition() {
-        const video = document.getElementById('video');
-        const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions());
-
-        if (detections.length > 0) {
-            const box = detections[0].box;
-            const faceCenterX = box.x + box.width / 3;
-            const wordRegions = getWordRegions();
-
-            const targetRegion = wordRegions[currentWordIndex];
-            const wordRegionCenterX = targetRegion.centerX;
-
-            if (Math.abs(faceCenterX - wordRegionCenterX) < 100) {
-                if (!selectedWords.includes(targetRegion.wordText)) {
-                    selectedWords.push(targetRegion.wordText);
-                    document.getElementById('selectedWordContainer').textContent = `선택된 단어: ${selectedWords.join(', ')}`;
-                }
-                currentWordIndex++;
-
-                if (currentWordIndex >= wordRegions.length) {
-                    currentWordIndex = 0;
-                }
-            }
-        } else {
-            document.getElementById('selectedWordContainer').textContent = '얼굴을 인식하지 못했습니다.';
-        }
-
-        setTimeout(checkUserPosition, 1000);
-    }
-</script>
+<div id="choicesDisplay">
+    <p>첫 번째 선택된 단어: <span id="choice1">___</span></p>
+    <p>두 번째 선택된 단어: <span id="choice2">___</span></p>
+    <p>세 번째 선택된 단어: <span id="choice3">___</span></p>
+</div>
 </body>
 </html>

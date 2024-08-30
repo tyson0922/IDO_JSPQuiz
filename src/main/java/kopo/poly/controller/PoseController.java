@@ -1,5 +1,6 @@
 package kopo.poly.controller;
 
+import jakarta.servlet.http.HttpSession;
 import kopo.poly.dto.object.QuizDTO;
 import kopo.poly.dto.quiz.GradingDTO;
 import kopo.poly.service.IQuizService;
@@ -50,7 +51,12 @@ public class PoseController {
 //    }
 
     @GetMapping("/pose-estimation")
-    public String poseEstimation(@RequestParam(value = "level", defaultValue = "3") Long level, @RequestParam(value = "number", defaultValue = "1") Long number, ModelMap model) {
+    public String poseEstimation(@RequestParam(value = "level", defaultValue = "3") Long level, @RequestParam(value = "number", defaultValue = "1") Long number, ModelMap model, HttpSession session) {
+
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
         QuizDTO pDTO = new QuizDTO();
         pDTO.setLevel(level);
         pDTO.setQuizNumber(number);
@@ -60,8 +66,15 @@ public class PoseController {
         return "quiz/pose-estimation";
     }
 
+
     @GetMapping("/IDOQuizBD")
-    public String IDOQuizBD(@RequestParam(value = "level", defaultValue = "3") Long level, @RequestParam(value = "number", defaultValue = "1") Long number, ModelMap model) {
+    public String IDOQuizBD(@RequestParam(value = "level", defaultValue = "3") Long level, @RequestParam(value = "number", defaultValue = "1") Long number, ModelMap model, HttpSession session) {
+
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
+
         QuizDTO pDTO = new QuizDTO();
         pDTO.setLevel(level);
         pDTO.setQuizNumber(number);
