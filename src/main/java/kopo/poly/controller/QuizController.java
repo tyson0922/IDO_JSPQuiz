@@ -62,7 +62,15 @@ public class QuizController {
         return "quiz/IDOLessonSelection3";
     }
 
-
+    @GetMapping(value = "/IDOLessonSelection3Unlock")
+    public String IDOLessonSelection3Unlock(HttpSession session) {
+        log.info("{}.quiz/IDOLessonSelection3Unlock", this.getClass().getName());
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
+        return "quiz/IDOLessonSelection3Unlock";
+    }
     @GetMapping(value = "/IDOVideo")
     public String IDOVideo(HttpSession session, RedirectAttributes redirectAttributes)
     {Object user = session.getAttribute("user");
