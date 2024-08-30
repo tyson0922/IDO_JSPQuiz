@@ -36,6 +36,23 @@ public class UserInfoController {
         return "user/userRegForm";
     }
 
+    @GetMapping(value = "/IDOMyProfilePage")
+    public String IDOmyProfilePage(HttpSession session){
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
+        return "/user/IDOMyProfilePage";
+    }
+
+    @GetMapping(value = "/IDOChildInfoPage")
+    public String IDOChildInfoPage(HttpSession session){
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
+        return "/user/IDOChildInfoPage";
+    }
     /**
      * 회원 가입 전 아이디 중복체크하기(Ajax를 통해 입력한 아이디 정보 받음)
      */
@@ -203,12 +220,16 @@ public class UserInfoController {
      * 로그인을 위한 입력 화면으로 이동
      */
     @GetMapping(value = "login")
-    public String login() {
+    public String login(HttpSession session) {
         log.info("{}.login Start!", this.getClass().getName());
-
+        // Check if the user is already logged in
+        if (session.getAttribute("SS_USER_ID") != null) {
+            log.info("User already logged in, redirecting to home page.");
+            return "redirect:/user/loginIndex";  // Redirect to home if already logged in
+        }
         log.info("{}.login End!", this.getClass().getName());
 
-        return "user/login";
+        return "/user/login";
     }
 
 
@@ -302,9 +323,13 @@ public class UserInfoController {
      * 로그인 성공 페이지 이동
      */
     @GetMapping(value = "loginIndex")
-    public String loginSuccess() {
+    public String loginSuccess(HttpSession session) {
         log.info("{}.user/loginResult Start!", this.getClass().getName());
-
+        // Check if the user is logged in
+        if (session.getAttribute("SS_USER_ID") == null) {
+            log.info("User not logged in, redirecting to login page.");
+            return "redirect:/user/login";  // Redirect to login if not logged in
+        }
         log.info("{}.user/loginResult End!", this.getClass().getName());
 
         return "user/loginIndex";
@@ -448,6 +473,12 @@ public class UserInfoController {
 
     }
 
+    @GetMapping(value = "/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();  // Invalidate session to log out the user
+        return "redirect:/user/index";  // Redirect to login page after logout
+    }
+
     /**
      * 비밀번호 찾기 로직 수행
      * <p>
@@ -515,4 +546,6 @@ public class UserInfoController {
         return "user/index";
 
     }
+
+
 }

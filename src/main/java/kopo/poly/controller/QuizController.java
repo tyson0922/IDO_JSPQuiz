@@ -33,23 +33,32 @@ public class QuizController {
     }
 
     @GetMapping(value = "/IDOLessonSelection1")
-    public String IDOLessonSelection1() {
+    public String IDOLessonSelection1(HttpSession session) {
         log.info("{}.quiz/IDOLessonSelection1", this.getClass().getName());
-
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
         return "quiz/IDOLessonSelection1";
     }
 
     @GetMapping(value = "/IDOLessonSelection2")
-    public String IDOLessonSelection2() {
+    public String IDOLessonSelection2(HttpSession session) {
         log.info("{}.quiz/IDOLessonSelection1", this.getClass().getName());
-
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
         return "quiz/IDOLessonSelection2";
     }
 
     @GetMapping(value = "/IDOLessonSelection3")
-    public String IDOLessonSelection3() {
+    public String IDOLessonSelection3(HttpSession session) {
         log.info("{}.quiz/IDOLessonSelection3", this.getClass().getName());
-
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
         return "quiz/IDOLessonSelection3";
     }
 
@@ -58,33 +67,54 @@ public class QuizController {
     public String IDOVideo(HttpSession session, RedirectAttributes redirectAttributes)
     {Object user = session.getAttribute("user");
 
-        if (user == null) {  // 로그인되지 않은 상태라면
-            redirectAttributes.addFlashAttribute("loginMessage", "로그인이 필요합니다.");
-            return "redirect:/user/login";  // 로그인 페이지로 리다이렉트
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
         }
         return "quiz/IDOVideo";
     }
 
     @GetMapping(value = "/wrong")
-    public String wrong(){
+    public String wrong(HttpSession session){
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
         return "result/wrong";
     }
 
     @GetMapping(value = "/oxQuiz")
-    public String oxQuiz(){
+    public String oxQuiz(HttpSession session){
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
         return "quiz/oxQuiz";
     }
 
     @GetMapping(value = "/jumpQuiz")
-    public String jumpQuiz(){
+    public String jumpQuiz(HttpSession session){
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
         return "quiz/jumpQuiz";
     }
 
     @GetMapping(value = "/voiceQuiz")
-    public String voiceQuiz(){
+    public String voiceQuiz(HttpSession session){
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
         return "quiz/voiceQuiz";
     }
 
     @GetMapping(value= "/IDOQuizBD")
-    public String IDOQuizBD(){return "quiz/IDOQuizBD";}
+    public String IDOQuizBD(HttpSession session){
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
+        return "quiz/IDOQuizBD";}
 }

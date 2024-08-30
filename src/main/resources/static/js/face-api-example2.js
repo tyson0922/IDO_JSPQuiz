@@ -45,7 +45,6 @@ async function initialize() {
     }, 0);
 }
 
-
 async function onPlay() {
     const displaySize = { width: video.videoWidth, height: video.videoHeight };
     faceapi.matchDimensions(overlay, displaySize);
@@ -57,12 +56,16 @@ async function onPlay() {
     let lastPosition = '';
     let choiceIndex = 0;
     let redirectUrl = '';
+    let choiceLocked = false; // New variable to lock the choice after selection
 
     function checkAndUpdatePosition(noseX) {
+        if (choiceLocked) return; // Do not update position if choice is locked
+
         let newPosition = '';
-        if (noseX < overlay.width / 3) {
+        const thirdWidth = overlay.width / 3;
+        if (noseX < thirdWidth) {
             newPosition = 'left';
-        } else if (noseX >= overlay.width / 3 && noseX < (2 * overlay.width) / 3) {
+        } else if (noseX >= thirdWidth && noseX < 2 * thirdWidth) {
             newPosition = 'middle';
         } else {
             newPosition = 'right';
@@ -76,14 +79,31 @@ async function onPlay() {
     }
 
     function startChoosing() {
-        if (choiceIndex < 3) {
+        if (choiceIndex === 0) {
             setTimeout(() => {
-                if (choices.length <= choiceIndex) {
-                    choices.push(lastPosition);
-                    console.log(`Choice ${choiceIndex + 1}: ${lastPosition}`);
-                    choiceIndex++;
+                const choice = lastPosition || 'middle';
+                choices.push(choice); // Default to 'middle' if lastPosition is not set
+                document.getElementById('choice1').textContent = choice; // Display the first choice
+                console.log(`Choice ${choiceIndex + 1}: ${lastPosition}`);
+                choiceLocked = true; // Lock the choice after selection
+                choiceIndex++;
+                setTimeout(() => {
+                    choiceLocked = false; // Unlock for the next choice
                     startChoosing();
-                }
+                }, 1000); // Short delay before unlocking for the next choice
+            }, 3000);
+        } else if (choiceIndex < 3) {
+            setTimeout(() => {
+                const choice = lastPosition;
+                choices.push(choice);
+                document.getElementById(`choice${choiceIndex + 1}`).textContent = choice; // Display the choice
+                console.log(`Choice ${choiceIndex + 1}: ${lastPosition}`);
+                choiceLocked = true; // Lock the choice after selection
+                choiceIndex++;
+                setTimeout(() => {
+                    choiceLocked = false; // Unlock for the next choice
+                    startChoosing();
+                }, 1000); // Short delay before unlocking for the next choice
             }, 3000);
         } else {
             evaluateChoices();
@@ -97,12 +117,16 @@ async function onPlay() {
         } else {
             redirectUrl = '/result/wrong';
         }
-        window.location.href = redirectUrl;
+
+        // Add a 1-second delay before redirecting
+        setTimeout(() => {
+            window.location.href = redirectUrl;
+        }, 1000); // 1000 milliseconds = 1 second
     }
 
-    startChoosing();
+    startChoosing();  // Start the sequence for detecting choices
 
-    setInterval(async () => {
+    async function detectFace() {
         if (video.paused || video.ended) {
             return;
         }
@@ -112,50 +136,26 @@ async function onPlay() {
 
         context.clearRect(0, 0, overlay.width, overlay.height);
 
-        faceapi.draw.drawFaceLandmarks(overlay, resizedDetections);
-
-        context.strokeStyle = 'red';
-        context.beginPath();
-        context.moveTo(overlay.width / 3, 0);
-        context.lineTo(overlay.width / 3, overlay.height);
-        context.stroke();
+        // // Draw dividing lines
+        // context.beginPath();
+        // context.moveTo(overlay.width / 3, 0);
+        // context.lineTo(overlay.width / 3, overlay.height);
+        // context.moveTo((2 * overlay.width) / 3, 0);
+        // context.lineTo((2 * overlay.width) / 3, overlay.height);
+        // context.stroke();
 
         if (resizedDetections.length > 0) {
             const landmarks = resizedDetections[0].landmarks;
             const nose = landmarks.getNose();
             const noseX = overlay.width - nose[3].x; // Mirror effect adjustment
 
-            const position = checkAndUpdatePosition(noseX);
-            if (position) {
-                lastPosition = position;
-            }
+            checkAndUpdatePosition(noseX); // Only update position if not locked
         }
-    }, 100);
+
+        // Trigger the next detection after a delay (e.g., 2 seconds)
+        setTimeout(detectFace, 3000);
+    }
+
+    // Start the face detection process
+    detectFace();
 }
-
-
-// function sendAnswer(answer) {
-//     const urlParams = new URLSearchParams(window.location.search);
-//     const level = urlParams.get('level');
-//     const number = urlParams.get('number');
-//
-//     fetch("/face/grading", {
-//         method: "POST",
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({ answer: answer, level: level, number: number })
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             /**
-//              * 정답일 때 correct 부분에 number를 쿼리파라미터로 넣기
-//              * @type {string}
-//              */
-//             const resultUrl = data.correct ? '/result/correct' : '/result/wrong';
-//             window.location.href = resultUrl;
-//         })
-//         .catch(error => {
-//             console.log('Error: ', error);
-//         });
-// }

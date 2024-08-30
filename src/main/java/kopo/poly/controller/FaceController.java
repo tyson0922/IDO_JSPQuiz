@@ -1,5 +1,6 @@
 package kopo.poly.controller;
 
+import jakarta.servlet.http.HttpSession;
 import kopo.poly.dto.object.QuizDTO;
 import kopo.poly.dto.request.AnswerDTO;
 import kopo.poly.dto.response.CorrectDTO;
@@ -50,12 +51,20 @@ public class FaceController {
     }
 
     @GetMapping(value = "/correct")
-    public String correct(){
+    public String correct(HttpSession session){
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
         return "result/correct";
     }
 
     @GetMapping(value = "/wrong")
-    public String wrong(){
+    public String wrong(HttpSession session){
+        if (session.getAttribute("SS_USER_ID") == null) {
+            // If not logged in, redirect to the login page
+            return "redirect:/user/login";
+        }
         return "result/wrong";
     }
 }
