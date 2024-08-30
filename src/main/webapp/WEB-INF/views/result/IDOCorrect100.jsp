@@ -142,19 +142,19 @@
 <div class="navigation">
     <div class="left">
         <div class="replay">
-            <a href="IDOQuizOx.html">
+            <a href="/sentence/buildSentence">
                 <img src="/static/img/IDOPlayBack-button.png" alt="다시풀기 아이콘"> 다시풀기
             </a>
         </div>
         <div class="replay">
-            <a href="IDOLessonSelection1.html">
+            <a href="/quiz/IDOLessonSelection3">
                 <img src="/static/img/IDOPlayBack-button.png" alt="동화선택 아이콘"> 동화선택
             </a>
         </div>
     </div>
     <div class="right">
         <div class="home">
-            <a href="index.html">
+            <a href="/quiz/IDOLessonSelection3Unlock">
                 다음퀴즈 <img src="/static/img/IDOPlayNext-button.png" alt="다음퀴즈 아이콘">
             </a>
         </div>

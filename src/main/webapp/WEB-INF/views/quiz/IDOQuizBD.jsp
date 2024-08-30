@@ -1,4 +1,3 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="kopo.poly.dto.object.QuizDTO" %>
 <%
@@ -18,23 +17,74 @@
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js"></script>
 
     <script type="text/javascript">
-        // More API functions here:
-        // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
+        window.onload = function() {
+            // Hide the small image container initially
+            document.getElementById('smallImageContainer').style.opacity = '0';
 
-        // the link to your model provided by Teachable Machine export panel
-        const URL = "static/models/";
-        let model, webcam, ctx, labelContainer, maxPredictions;
-        let timeoutHandle;  // To store the timeout ID
-        let poseDetected = false; // Flag to determine if pose has been detected
+            // Show the main heading for 6 seconds, then start fading it out
+            setTimeout(() => {
+                document.getElementById('mainHeading').classList.add('fade-out'); // Start fading out after 6 seconds
+                setTimeout(() => {
+                    document.getElementById('mainHeading').style.display = 'none'; // Hide it completely after the fade-out transition
+                    init(); // Initialize the webcam and model
+                }, 1000); // Match this duration with the fade-out transition time
+            }, 9500);
+
+            // Show the small image container after 3 seconds
+            setTimeout(() => {
+                document.getElementById('smallImageContainer').style.opacity = '1'; // Show small image container
+            }, 11000);
+
+            // Show video image and question overlay after 3 seconds
+            setTimeout(() => {
+                document.getElementById('videoImage').style.opacity = '0.5';
+                document.getElementById('questionOverlay').style.opacity = '1';
+
+                setTimeout(() => {
+                    document.getElementById('questionOverlay').style.opacity = '0';
+
+                    setTimeout(() => {
+                        document.getElementById('countdown').style.opacity = '0'; // Hide countdown
+                        document.getElementById('webcamVideo').style.opacity = '1'; // Show webcam
+                        document.getElementById('questionReplacement').style.opacity = '1'; // Show replacement image
+
+                        // Initialize webcam
+                        const video = document.getElementById('webcamVideo');
+                        navigator.mediaDevices.getUserMedia({ video: true })
+                            .then(stream => {
+                                video.srcObject = stream;
+                                video.onloadedmetadata = () => {
+                                    video.play(); // Play video as soon as it's loaded
+                                };
+                            })
+                            .catch(err => {
+                                console.error('Failed to access webcam: ', err);
+                            });
+
+                        let countdown = 5;
+                        const countdownInterval = setInterval(() => {
+                            countdown--;
+                            document.getElementById('countdown').textContent = countdown;
+                            if (countdown === 0) {
+                                clearInterval(countdownInterval);
+                                startListening();
+                            }
+                        }, 1000); // Changed to 1000ms for 1 second countdown intervals
+                    }, 300);
+
+                }, 7800); // Adjusted timing here
+
+            }, 3000); // Adjusted timing here
+        };
 
         async function init() {
-            const modelURL = URL + "model.json";
-            const metadataURL = URL + "metadata.json";
+            const modelURL = "static/models/model.json";
+            const metadataURL = "static/models/metadata.json";
 
             model = await tmPose.load(modelURL, metadataURL);
             maxPredictions = model.getTotalClasses();
 
-            const size = 640; // 낮은 해상도로 설정하여 처리 속도 개선
+            const size = 640; // Set lower resolution for faster processing
             const flip = true;
             webcam = new tmPose.Webcam(size, size, flip);
             await webcam.setup();
@@ -51,13 +101,11 @@
                 labelContainer.appendChild(document.createElement("div"));
             }
 
-            // 웹캠 및 모델 초기화가 완료되면 바로 예측 시작
+            // Start prediction loop
             window.requestAnimationFrame(loop);
 
             // Check for pose after 5 seconds
             setTimeout(checkPoseAfterDelay, 5000); // 5 seconds delay
-
-            // redirectToResultCorrectAfterDelay(5000);
         }
 
         async function loop(timestamp) {
@@ -68,9 +116,9 @@
 
         async function predict() {
             // Prediction #1: run input through posenet
-            // estimatePose can take in an image, video or canvas html element
+            // estimatePose can take in an image, video or canvas HTML element
             const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
-            // Prediction 2: run input through teachable machine classification model
+            // Prediction #2: run input through Teachable Machine classification model
             const prediction = await model.predict(posenetOutput);
 
             for (let i = 0; i < maxPredictions; i++) {
@@ -78,32 +126,20 @@
                     prediction[i].className + ": " + prediction[i].probability.toFixed(2);
                 labelContainer.childNodes[i].innerHTML = classPrediction;
 
-
                 // Check if the pose 'ㄷ' is detected
                 if (prediction[i].className === 'ㄷ' && prediction[i].probability > 0.5) {
                     poseDetected = true; // Set flag if pose 'ㄷ' is detected
                 }
             }
 
-            // finally draw the poses
+            // Draw the poses
             drawPose(pose);
         }
-
-
-        if (timeoutHandle) {
-            clearTimeout(timeoutHandle);
-        }
-
-        // 지연 시간 단축
-        timeoutHandle = setTimeout(() => compareAnswers(predictedAnswer), 2000);
-
-
-
 
         function drawPose(pose) {
             if (webcam.canvas) {
                 ctx.drawImage(webcam.canvas, 0, 0);
-                // draw the keypoints and skeleton
+                // Draw the keypoints and skeleton
                 if (pose) {
                     const minPartConfidence = 0.5;
                     tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
@@ -112,54 +148,15 @@
             }
         }
 
-        // 페이지 로드 후 6초 뒤에 자동으로 canvas를 띄우기 위해 초기화 함수 호출
-        window.onload = function() {
-            setTimeout(init, 6000); // 6초 후에 init 함수를 호출합니다.
-        };
-
-        // function redirectToResultCorrectAfterDelay(delay) {
-        //     setTimeout(() => {
-        //         window.location.href = '/result/correct';
-        //     }, delay);
-        // }
-
-
-
-
-
-
-        let k1 = 0;
-        let k2 = 0;
-        let predictedAnswer = 0;
-        let maxProbability = 0;
-        let startTime;
-
-        const correctAnswer = "<%=rDTO.getCorrect()%>";
-        const content = "<%=rDTO.getContent()%>";
-
-        async function loadModel() {
-            const modelURL = URL + "model.json";
-            const metadataURL = URL + "metadata.json";
-
-            // load the model and metadata
-            // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-            // Note: the pose library adds a tmPose object to your window (window.tmPose)
-            model = await tmPose.load(modelURL, metadataURL);
-            maxPredictions = model.getTotalClasses();
+        function checkPoseAfterDelay() {
+            if (poseDetected) {
+                window.location.href = '/result/correct75';
+            } else {
+                window.location.href = '/result/wrong';
+            }
         }
-
-        function delay(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-
-        // window.onload = async function () {
-        //     await Promise.all([loadModel(), delay(3000)]);
-        //     alert('3초 지남');
-        //     init();
-        // };
 
         function compareAnswers(predictedAnswer) {
-
             if (!predictedAnswer) {
                 return; // No prediction, so nothing to compare
             }
@@ -190,12 +187,7 @@
                 }),
                 success: function (response) {
                     console.log("서버 응답 : ", response);
-                    // if (grading === '정답') {
                     if (response.includes('정답')) {
-                        /**
-                         * correct 뒤에 number 쿼리파라미터 붙여서 보내기
-                         * @type {string}
-                         */
                         window.location.href = '/result/correct75';
                     } else {
                         window.location.href = '/result/wrong';
@@ -204,64 +196,13 @@
                 error: function (error) {
                     console.error("에러 발생 : ", error);
                 }
-            })
-
-
-            // const resultUrl = data.correct ? '/result/correct' : '/result/wrong';
-            // window.location.href = resultUrl;
-            // return;
+            });
         }
 
-        function checkPoseAfterDelay() {
-            if (poseDetected) {
-                window.location.href = '/result/correct75';
-            } else {
-                window.location.href = '/result/wrong';
-            }
+        function startListening() {
+            // Placeholder function for additional functionality
+            console.log("Starting to listen for pose...");
         }
-
-    </script>
-
-
-    <script>
-        setTimeout(() => {
-            document.getElementById('videoImage').style.opacity = '0.5';
-            document.getElementById('questionOverlay').style.opacity = '1';
-
-            setTimeout(() => {
-                document.getElementById('questionOverlay').style.opacity = '0';
-
-                setTimeout(() => {
-                    document.getElementById('mainHeading').style.opacity = '0';
-                    document.getElementById('countdown').style.opacity = '0'; // Hide countdown
-                    document.getElementById('webcamVideo').style.opacity = '1'; // Show webcam
-                    document.getElementById('questionReplacement').style.opacity = '1'; // Show replacement image
-
-                    // Initialize webcam
-                    const video = document.getElementById('webcamVideo');
-                    navigator.mediaDevices.getUserMedia({video: true})
-                        .then(stream => {
-                            video.srcObject = stream;
-                        })
-                        .catch(err => {
-                            console.error('Failed to access webcam: ', err);
-                        });
-
-                    let countdown = 5;
-                    const countdownInterval = setInterval(() => {
-                        countdown--;
-                        document.getElementById('countdown').textContent = countdown;
-                        if (countdown === 0) {
-                            clearInterval(countdownInterval);
-                            startListening();
-                        }
-                    }, 1000);
-                }, 500);
-
-            }, 3500);
-
-        }, 3500);
-
 
 
     </script>
@@ -311,7 +252,12 @@
             3px -3px 2px white,
             -3px 3px 2px white,
             3px 3px 2px white;
-            transition: opacity 0.5s ease;
+            opacity: 1; /* Default opacity */
+            transition: opacity 1s ease; /* Transition for fade-out effect */
+        }
+
+        .fade-out {
+            opacity: 0; /* Fades out the element */
         }
 
         .video-container {
@@ -323,6 +269,7 @@
             overflow: hidden;
             position: relative;
         }
+
 
         .video-container img {
             width: 100%;
@@ -393,6 +340,25 @@
             transition: opacity 0.5s ease;
             z-index: 3; /* Ensure it's above the webcam */
         }
+
+        .small-image-container {
+            position: fixed; /* 화면에 고정 */
+            top: 48px; /* 원하는 만큼 상단으로 이동 */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 240px; /* 적절한 크기로 조정 */
+            height: auto;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+            z-index: 100; /* 모든 요소 위에 배치 */
+        }
+
+        .small-image-container img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
     </style>
 </head>
 <body>
@@ -414,18 +380,23 @@
             </div>
 
             <%--<div>Teachable Machine Pose Model</div>--%>
-<%--            <button type="button" onclick="init()">Start</button>--%>
+            <%--            <button type="button" onclick="init()">Start</button>--%>
+        </div>
+        <!-- New div for the smaller IDOQuizBDq image -->
+        <div id="smallImageContainer" class="small-image-container">
+            <img id="smallImage" src="static/img/IDOQuizBDq.PNG" alt="IDOQuizBDq" />
         </div>
 
-<%--        <div class="webcam-container">--%>
-<%--            <div style="position: relative;">--%>
-<%--                <canvas id="canvas"></canvas>--%>
-<%--                <img id="questionReplacement" class="question-replacement" src="static/img/IDOQuizBDq.PNG">--%>
-<%--            </div>--%>
-<%--        </div>--%>
+
+        <%--        <div class="webcam-container">--%>
+        <%--            <div style="position: relative;">--%>
+        <%--                <canvas id="canvas"></canvas>--%>
+        <%--                <img id="questionReplacement" class="question-replacement" src="static/img/IDOQuizBDq.PNG">--%>
+        <%--            </div>--%>
+        <%--        </div>--%>
 
     </div>
-<%--    <img id="questionReplacement" class="question-replacement" src="static/img/IDOQuizBDq.PNG">--%>
+    <%--    <img id="questionReplacement" class="question-replacement" src="static/img/IDOQuizBDq.PNG">--%>
     <!-- Replacement Image -->
 </div>
 
